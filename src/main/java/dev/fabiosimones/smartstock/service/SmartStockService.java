@@ -1,5 +1,6 @@
 package dev.fabiosimones.smartstock.service;
 
+import dev.fabiosimones.smartstock.domain.CsvStockItem;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,6 +18,14 @@ public class SmartStockService {
         //Ler o arquivo csv
         try {
             var items = reportService.readStockReport(reportPath);
+
+            items.forEach(item -> {
+                if(item.getQuantity() < item.getReorderThreshould()){
+                    //Calcular a quantidade a ser recomprada.
+                    var reorderQuantity = calculateReorderQuantity(item);
+                }
+            });
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -24,5 +33,9 @@ public class SmartStockService {
         //Para cada item do CSV chamar a api do setor de compras.
 
         //Salvar no mongodb os itens que foram recomprados.
+    }
+
+    private Integer calculateReorderQuantity(CsvStockItem item) {
+        return item.getReorderThreshould() + ((int) Math.ceil(item.getReorderThreshould()*0.2));
     }
 }
