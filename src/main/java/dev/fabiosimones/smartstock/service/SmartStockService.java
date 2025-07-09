@@ -9,9 +9,11 @@ import java.io.IOException;
 public class SmartStockService {
 
     private final ReportService reportService;
+    private final PurchaseSectorService purchaseSectorService;
 
-    public SmartStockService(ReportService reportService) {
+    public SmartStockService(ReportService reportService, PurchaseSectorService purchaseSectorService) {
         this.reportService = reportService;
+        this.purchaseSectorService = purchaseSectorService;
     }
 
     public void process(String reportPath){
@@ -23,6 +25,11 @@ public class SmartStockService {
                 if(item.getQuantity() < item.getReorderThreshould()){
                     //Calcular a quantidade a ser recomprada.
                     var reorderQuantity = calculateReorderQuantity(item);
+
+                    //Para cada item do CSV chamar a api do setor de compras.
+                    purchaseSectorService.sendPurchaseRequest(item, reorderQuantity);
+
+                    //Salvar no mongodb os itens que foram recomprados.
                 }
             });
 
@@ -30,9 +37,6 @@ public class SmartStockService {
             throw new RuntimeException(e);
         }
 
-        //Para cada item do CSV chamar a api do setor de compras.
-
-        //Salvar no mongodb os itens que foram recomprados.
     }
 
     private Integer calculateReorderQuantity(CsvStockItem item) {
