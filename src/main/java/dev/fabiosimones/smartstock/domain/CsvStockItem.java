@@ -13,7 +13,7 @@ public class CsvStockItem {
     private Integer quantity;
 
     @CsvBindByName(column = "reorder_threshold")
-    private Integer reorderThreshould;
+    private Integer reorderThreshold;
 
     @CsvBindByName(column = "supplier_name")
     private String supplierName;
@@ -51,12 +51,12 @@ public class CsvStockItem {
         this.quantity = quantity;
     }
 
-    public Integer getReorderThreshould() {
-        return reorderThreshould;
+    public Integer getReorderThreshold() {
+        return reorderThreshold;
     }
 
-    public void setReorderThreshould(Integer reorderThreshould) {
-        this.reorderThreshould = reorderThreshould;
+    public void setReorderThreshold(Integer reorderThreshold) {
+        this.reorderThreshold = reorderThreshold;
     }
 
     public String getSupplierName() {
